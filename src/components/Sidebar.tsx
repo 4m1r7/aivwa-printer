@@ -33,11 +33,11 @@ const Sidebar: React.FC = () => {
           Dashboard
         </Link>
 
-        <Link to="/settings" className={`${styles.container}
-        ${isLinkActive('/settings') ? styles.current : ''}
+        <Link to="/setting" className={`${styles.container}
+        ${isLinkActive('/setting') ? styles.current : ''}
         flex flex-col items-center gap-1 text-menu-title text-customGray`} >
-          <img src={settings} alt="settings" className="w-9 h-9" />
-          Settings
+          <img src={settings} alt="setting" className="w-9 h-9" />
+          Setting
         </Link>
 
       </div>

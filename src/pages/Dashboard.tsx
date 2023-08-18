@@ -11,14 +11,14 @@ const Dashboard: React.FC = () => {
   return (
     <Layout>
       <div className="h-full w-full flex justify-center items-center">
-        <div className='w-main h-main max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12'>
+        <div className='w-[54rem] h-[41rem] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12'>
 
 {/* Now Printing section */}
           <div className='w-full h-min'>
-            <h2 className='ml-3 text-customGray font-medium text-lg'>Now Printing</h2>
+            <h2 className='ml-3 text-customGray font-medium'>Now Printing</h2>
             <div className='w-full h-full border border-b-color rounded-2xl p-4'>
               <div className='w-full h-full rounded-lg shadow-pane flex justify-between items-center px-8'>
-                <img src={Cog} alt="templates" className="w-5 h-5 fill-current text-red-500" />
+                <img src={Cog} alt="templates" className="w-5 h-5" />
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>File Name:</p>
                   <p className='text-sm'>Slab Label</p>
@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
           <div className='w-full h-full flex gap-4'>
             <div className="h-full w-3/5 flex flex-col gap-8 justify-between">
               <div className='h-full flex flex-col'>
-                <h2 className='ml-3 text-customGray font-medium text-lg'>Printer Status</h2>
+                <h2 className='ml-3 text-customGray font-medium'>Printer Status</h2>
                 <div className='w-full h-full border border-b-color rounded-2xl p-4 flex justify-between text-center'>
                   <div className="w-1/3 flex flex-col justify-center">
                     <p className='font-light text-customGray text-sm '>Temperature:</p>
@@ -66,7 +66,7 @@ const Dashboard: React.FC = () => {
 
 {/* WiFi Connections */}
               <div className=' flex flex-col'>
-                <h2 className='ml-3 text-customGray font-medium text-lg'>WiFi Connections</h2>
+                <h2 className='ml-3 text-customGray font-medium'>WiFi Connections</h2>
                 <div className='w-full h-fit border border-b-color rounded-2xl px-8 py-4 flex justify-between items-center'>
                   <div className='flex items-center gap-4'>
                     <img src={Wifi} alt="templates" className="w-5 h-5" />
@@ -83,7 +83,7 @@ const Dashboard: React.FC = () => {
 
 {/* Firmware Update */}
               <div className='h-full flex flex-col'>
-                <h2 className='ml-3 text-customGray font-medium text-lg'>Firmware Update</h2>
+                <h2 className='ml-3 text-customGray font-medium'>Firmware Update</h2>
                 <div className='w-full h-full border border-b-color rounded-2xl px-8 py-4 flex justify-between items-center'>
                   <div className='flex flex-col items-center'>
                       <p className='text-xl text-customBlue'>1.2.3.4.5</p>
@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
 
 {/* Recent Activity */}
             <div className='w-2/5 h-full flex flex-col'>
-              <h2 className='ml-3 text-customGray font-medium text-lg'>Recent Activity</h2>
+              <h2 className='ml-3 text-customGray font-medium'>Recent Activity</h2>
               <div className='w-full h-full border border-b-color rounded-2xl p-4'>
                 <div className='w-full h-min border-t border-b-color mt-[2.5rem]'></div>
                 <div className='w-full h-min border-t border-b-color mt-[2.5rem]'></div>
