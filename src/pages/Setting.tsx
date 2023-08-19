@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Layout from '../components/Layout';
 
 import ToggleSwitch from '../components/ToggleSwith';
@@ -7,7 +7,28 @@ import ColoredSquares from '../components/ProgressSquares';
 import Refresh from '../assets/icons/refresh.svg';
 import Edit from '../assets/icons/edit.svg';
 
+
 const Dashboard: React.FC = () => {
+
+  const apiKeyRef = useRef<HTMLParagraphElement>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyToClipboard = async () => {
+    try {
+
+      await navigator.clipboard.writeText(apiKeyRef.current?.textContent ?? '');
+
+      setCopied(true);
+
+      // Revert copied text to copy after 2 seconds
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  };
 
 
   return (
@@ -41,7 +62,9 @@ const Dashboard: React.FC = () => {
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Print Speed</div>
                   <div className="w-7/12 flex items-center gap-2">
-                    <NumberInput />
+                    <div className='w-24'>
+                      <NumberInput />
+                    </div>
                     <p className='text-micro text-customGray'>meter/minute</p>
                   </div>
                 </div>
@@ -49,7 +72,9 @@ const Dashboard: React.FC = () => {
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Encoder Steps</div>
                   <div className="w-7/12 flex items-center gap-2">
-                    <NumberInput />
+                    <div className='w-24'>
+                      <NumberInput />
+                    </div>
                     <p className='text-micro text-customGray'>step/milimeter</p>
                   </div>
                 </div>
@@ -108,9 +133,10 @@ const Dashboard: React.FC = () => {
                 
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">API Security key</div>
-                  <div className="w-7/12 relative">
-                    <input type="text" className='w-full px-2 py-[.4rem] text-sm border border-customGray rounded-lg' />
-                    <img src={Refresh} alt="refresh" className="w-4 h-4 absolute right-3 top-[.6rem] cursor-pointer" />
+                  <div className="w-7/12 relative flex items-center">
+                    <p ref={apiKeyRef} className='w-full px-2 py-[.4rem] text-sm text-customGrayDark border border-customGray rounded-lg'>Lgbd-OSDB-3vdW-Emps</p>
+                    {copied ? <span className="text-green-500 text-pico absolute right-9">Copied!</span> : <span onClick={handleCopyToClipboard} className="text-customGrayDark text-pico absolute right-10 cursor-pointer">Copy</span>}
+                    <img src={Refresh} alt="refresh" className="w-4 h-4 absolute right-3 cursor-pointer" />
                   </div>
                 </div>
                 

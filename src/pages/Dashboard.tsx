@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
       <div className="h-full w-full flex justify-center items-center">
         <div className='w-[54rem] h-[41rem] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12'>
 
-{/* Now Printing section */}
+          {/* Now Printing section */}
           <div className='w-full h-min'>
             <h2 className='ml-3 text-customGray font-medium'>Now Printing</h2>
             <div className='w-full h-full border border-b-color rounded-2xl p-4'>
@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-{/* Printer Status */}
+          {/* Printer Status */}
           <div className='w-full h-full flex gap-4'>
             <div className="h-full w-3/5 flex flex-col gap-8 justify-between">
               <div className='h-full flex flex-col'>
@@ -64,7 +64,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-{/* WiFi Connections */}
+              {/* WiFi Connections */}
               <div className=' flex flex-col'>
                 <h2 className='ml-3 text-customGray font-medium'>WiFi Connections</h2>
                 <div className='w-full h-fit border border-b-color rounded-2xl px-8 py-4 flex justify-between items-center'>
@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-{/* Firmware Update */}
+              {/* Firmware Update */}
               <div className='h-full flex flex-col'>
                 <h2 className='ml-3 text-customGray font-medium'>Firmware Update</h2>
                 <div className='w-full h-full border border-b-color rounded-2xl px-8 py-4 flex justify-between items-center'>
@@ -97,7 +97,7 @@ const Dashboard: React.FC = () => {
 
             </div>
 
-{/* Recent Activity */}
+            {/* Recent Activity */}
             <div className='w-2/5 h-full flex flex-col'>
               <h2 className='ml-3 text-customGray font-medium'>Recent Activity</h2>
               <div className='w-full h-full border border-b-color rounded-2xl p-4'>

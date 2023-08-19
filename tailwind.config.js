@@ -6,6 +6,7 @@ module.exports = {
         customBlue: "#2690EA",
         customGray: "#AAAAAA",
         customGrayDark: "#969696",
+        customGrayLight: "#F4F4F4",
         customGreen: "#00D816",
         "b-color": "#D5D5D5",
         radiobg: "#F0F0F0",
@@ -16,6 +17,7 @@ module.exports = {
         "menu-title": ".84rem",
         "main-title": "1.875rem",
         "4xl": "2.25rem",
+        "modal-size": ".95rem",
       },
       boxShadow: {
         menu: "0 0px 25px 0px rgba(0, 0, 0, 0.2)",
