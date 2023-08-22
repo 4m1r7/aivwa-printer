@@ -8,8 +8,9 @@ module.exports = {
         customGrayDark: "#969696",
         customGrayLight: "#F4F4F4",
         customGreen: "#00D816",
-        "b-color": "#D5D5D5",
         radiobg: "#F0F0F0",
+        "b-color": "#D5D5D5",
+        "tab-color": "#FAFAFA",
       },
       fontSize: {
         pico: ".65rem",
@@ -23,6 +24,7 @@ module.exports = {
         menu: "0 0px 25px 0px rgba(0, 0, 0, 0.2)",
         main: "0 0px 60px 0px rgba(0, 0, 0, 0.12)",
         pane: "0 0px 15px 0px rgba(0, 0, 0, 0.1)",
+        element: "0 0px 10px 0px rgba(0, 0, 0, 0.15)",
         "radio-inner": "inset 0px 0px 4px 0px rgba(0, 0, 0, 0.2);",
       },
     },

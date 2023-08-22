@@ -5,6 +5,7 @@ import TemplateItem from '../components/TemplateItem';
 import Import from '../assets/icons/import.svg';
 import Plus from '../assets/icons/plus.svg';
 import SlabModal from '../components/SlabModal';
+import { Link } from 'react-router-dom';
 
 const Templates: React.FC = () => {
 
@@ -44,10 +45,13 @@ const Templates: React.FC = () => {
                             Import
                         </button>
                         
-                        <button className='text-white bg-customBlue text-xs font-normal px-4 py-[.6rem] rounded-lg flex justify-center items-center gap-1'>
-                            <img src={Plus} alt="templates" className="w-4 h-4" />
-                            Create New
-                        </button>
+                        <Link
+                            to='/create-template'
+                            className='text-white bg-customBlue text-xs font-normal px-4 py-[.6rem] rounded-lg flex justify-center items-center gap-1'
+                        >
+                                <img src={Plus} alt="templates" className="w-4 h-4" />
+                                Create New
+                        </Link>
 
                     </div>
 

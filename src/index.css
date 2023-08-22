@@ -7,7 +7,121 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type="number"] {
-  -moz-appearance: textfield;
-  /* Firefox */
+
+.canvas {
+  background-image: url("./assets/icons/canvas-grid.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center right;
+}
+
+/* Tabs reverse border radius styles */
+/* inactive tabs reverse radius corners */
+.tabs-container > div:first-child > div::before,
+.tabs-container > div:first-child > div::after {
+  content: " ";
+  position: absolute;
+
+  bottom: -0.75rem;
+  left: -0.9px;
+  width: 1rem;
+  height: 1rem;
+  border-left: 1px solid #e5e7eb;
+  z-index: 0;
+  background-color: #fafafa;
+
+  transition: all 0.15s linear;
+}
+
+.tabs-container > div::before {
+  content: "";
+  position: absolute;
+
+  bottom: 0;
+  right: -0.6rem;
+  width: 0;
+  height: 0;
+  border-bottom: 0.65rem solid #fafafa;
+  border-right: 0.65rem solid transparent;
+}
+.tabs-container > div::after {
+  content: "";
+  position: absolute;
+
+  background-color: transparent;
+  bottom: 1px;
+  right: -0.75rem;
+  height: 0.75rem;
+  width: 0.75rem;
+  border-bottom-left-radius: 80%;
+  /* border-color: #e5e7eb; */
+  border-width: 0 0 1px 1px;
+
+  transition: all 0.15s linear;
+}
+
+/* active tabs reverse radius corners */
+.active-tab:first-child > div::before,
+.active-tab:first-child > div::after {
+  content: "";
+  position: absolute;
+
+  bottom: -0.6rem;
+  left: -0.9px;
+  height: 0.7rem;
+  width: 0.7rem;
+  border-radius: 0;
+  border: 0;
+  border-left: 1px solid #2690ea !important;
+  background: #fafafa;
+}
+
+.active-tab::before {
+  content: "";
+  position: absolute;
+
+  bottom: 0;
+  right: -0.6rem;
+  width: 0;
+  height: 0;
+  border-bottom: 0.65rem solid #fafafa;
+  border-right: 0.65rem solid transparent;
+}
+.active-tab::after {
+  content: "";
+  position: absolute;
+
+  background-color: transparent;
+  bottom: 1px;
+  right: -0.75rem;
+  height: 0.75rem;
+  width: 0.75rem;
+  border-bottom-left-radius: 80%;
+  border-color: #2690ea;
+  border-width: 0 0 1px 1px;
+}
+
+.tabs-container .active-tab > div::before {
+  content: "";
+  position: absolute;
+
+  bottom: 0;
+  left: -0.6rem;
+  width: 0;
+  height: 0;
+  border-bottom: 0.65rem solid #fafafa;
+  border-left: 0.65rem solid transparent;
+}
+.tabs-container .active-tab > div::after {
+  content: "";
+  position: absolute;
+
+  background-color: transparent;
+  bottom: 1px;
+  left: -0.75rem;
+  height: 0.75rem;
+  width: 0.75rem;
+  border-bottom-right-radius: 80%;
+  border-color: #2690ea;
+  border-width: 0 1px 1px 0;
 }
