@@ -5,8 +5,9 @@ module.exports = {
       colors: {
         customBlue: "#2690EA",
         customGray: "#AAAAAA",
-        customGrayDark: "#969696",
         customGrayLight: "#F4F4F4",
+        customGrayDark: "#969696",
+        customGrayDarker: "#505050",
         customGreen: "#00D816",
         radiobg: "#F0F0F0",
         "b-color": "#D5D5D5",
