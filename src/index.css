@@ -141,3 +141,12 @@ input::-webkit-inner-spin-button {
   border-color: #2690ea;
   border-width: 0 1px 1px 0;
 }
+
+/* Dropdown Select Element Styles */
+.custom-select {
+  appearance: none; /* Remove default appearance */
+  -webkit-appearance: none; /* For Safari */
+  -moz-appearance: none; /* For Firefox */
+  background-color: #0000;
+  padding-right: 1.2rem;
+}

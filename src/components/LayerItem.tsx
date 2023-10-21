@@ -25,7 +25,7 @@ const LayerItem: React.FC<LayerItemProps> = ({ icon, name, visibilityIcons, inde
 
 
   return (
-    <div className={` flex items-center gap-4 p-3 relative rounded-lg border border-[#DCDCDC] bg-customGrayLight cursor-pointer
+    <div className={`flex items-center gap-4 p-3 relative rounded-lg border border-[#DCDCDC] bg-customGrayLight cursor-pointer
                     ${activeLayer ? 'border-1 border-customBlue' : ''} `}
           onClick={onClick}
     >
