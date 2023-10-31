@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 
 import ToggleSwitch from '../components/ToggleSwith';
@@ -6,12 +6,30 @@ import NumberInput from '../components/NumberInput';
 import ColoredSquares from '../components/ProgressSquares';
 import Refresh from '../assets/icons/refresh.svg';
 import Edit from '../assets/icons/edit.svg';
+import { SERVER_IP } from '../helpers/config';
 
 
-const Dashboard: React.FC = () => {
+export default function Settings() {
 
   const apiKeyRef = useRef<HTMLParagraphElement>(null);
   const [copied, setCopied] = useState(false);
+  const [printerInfo, setPrinterInfo] = useState<any>(null);
+  
+  console.log(printerInfo);
+
+  useEffect(() => {
+
+    // Find the ip of the current page
+    // const currentDomain = window.location.hostname;
+
+    // Make an HTTP request to fetch printer information
+    fetch(`http://${SERVER_IP}/printer/getPrinterInfo`)
+      .then((response) => response.json())
+      .then((data) => setPrinterInfo(data))
+      .catch((error) => console.error('Error fetching data:'));
+  }, []);
+
+
 
   const handleCopyToClipboard = async () => {
     try {
@@ -48,14 +66,22 @@ const Dashboard: React.FC = () => {
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Printer Status</div>
                   <div className="w-7/12">
-                    <ToggleSwitch />
+                    <ToggleSwitch
+                      toggleStatus = {(printerInfo?.printer_status ? printerInfo.printer_status : 'off' ) === 'on'}
+                      apiRoute="/printer/setPrinterSettings"
+                      property="printer_status"
+                    />
                   </div>
                 </div>
                 
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Printer Auto ON</div>
                   <div className="w-7/12">
-                    <ToggleSwitch />
+                    <ToggleSwitch
+                      toggleStatus = {(printerInfo?.printer_auto_on ? printerInfo.printer_auto_on : 'off' ) === 'on'}
+                      apiRoute="/printer/setPrinterSettings"
+                      property="printer_auto_on"
+                    />
                   </div>
                 </div>
                 
@@ -63,7 +89,7 @@ const Dashboard: React.FC = () => {
                   <div className="w-5/12 flex items-center font-light">Print Speed</div>
                   <div className="w-7/12 flex items-center gap-2">
                     <div className='w-24'>
-                      <NumberInput />
+                      <NumberInput currentValue={(printerInfo?.printspeed ? printerInfo.printspeed : 0 )} />
                     </div>
                     <p className='text-micro text-customGray'>meter/minute</p>
                   </div>
@@ -73,7 +99,7 @@ const Dashboard: React.FC = () => {
                   <div className="w-5/12 flex items-center font-light">Encoder Steps</div>
                   <div className="w-7/12 flex items-center gap-2">
                     <div className='w-24'>
-                      <NumberInput />
+                      <NumberInput currentValue={(printerInfo?.encoder_steps ? printerInfo.encoder_steps : 0 )} />
                     </div>
                     <p className='text-micro text-customGray'>step/milimeter</p>
                   </div>
@@ -82,14 +108,18 @@ const Dashboard: React.FC = () => {
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Print mirror</div>
                   <div className="w-7/12">
-                    <ToggleSwitch />
+                    <ToggleSwitch
+                      toggleStatus = {(printerInfo?.print_mirror ? printerInfo.print_mirror : 'off' ) === 'on'}
+                      apiRoute="/printer/setPrinterSettings"
+                      property="printer_auto_on"
+                    />
                   </div>
                 </div>
                 
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Ink Opacity</div>
                   <div className="w-7/12">
-                    <ColoredSquares progress={3} total={5} />
+                    <ColoredSquares progress={printerInfo?.ink_opacity ? printerInfo.ink_opacity : 0} total={5} />
                   </div>
                 </div>
                 
@@ -106,7 +136,7 @@ const Dashboard: React.FC = () => {
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Login Required</div>
                   <div className="w-7/12">
-                    <ToggleSwitch />
+                    {/* <ToggleSwitch /> */}
                   </div>
                 </div>
                 
@@ -127,7 +157,7 @@ const Dashboard: React.FC = () => {
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">API Security Required</div>
                   <div className="w-7/12 flex items-center gap-2">
-                    <ToggleSwitch />
+                    {/* <ToggleSwitch /> */}
                   </div>
                 </div>
                 
@@ -148,19 +178,19 @@ const Dashboard: React.FC = () => {
           <div className='w-full h-full border border-b-color rounded-2xl py-auto px-10 flex justify-evenly items-center'>
             
             <div className='flex flex-col justify-center items-center gap-0 pt-2'>
-              <p className="text-customBlue text-xl font-extralight">1.2.3.4.5</p>
+              <p className="text-customBlue text-xl font-extralight">{printerInfo?.frimware_version ? printerInfo.frimware_version : 'n/a'}</p>
               <p className="text-customGreen text-micro font-semibold opacity-30">Update</p>
               <p className="text-sm text-customGrayDark font-semibold">Firmware Version</p>
             </div>
             
             <div className='flex flex-col justify-center items-center'>
-              <p className="text-customBlue text-4xl font-extralight">53,521</p>
+              <p className="text-customBlue text-4xl font-extralight">{printerInfo?.total_print_count ? printerInfo.total_print_count : 'n/a'}</p>
               <p className="text-sm text-customGrayDark font-semibold">Total Print Count</p>
             </div>
 
             <div className='flex flex-col justify-center items-center pt-3'>
-              <p className="text-customBlue text-xl font-extralight">12/34/4567</p>
-              <p className="text-sm text-customGrayDark font-semibold pt-4">Firmware Date</p>
+              <pre className="text-customBlue text-center font-extralight leading-5">{printerInfo?.frimware_update_date ? printerInfo.frimware_update_date.replace(' ', '\n') : 'n/a' }</pre>
+              <p className="text-sm text-customGrayDark font-semibold pt-3">Firmware Date</p>
             </div>
             
           </div>
@@ -170,17 +200,17 @@ const Dashboard: React.FC = () => {
           <div className="w-full flex gap-4">
 
             {/* Left */}
-            <div className='w-[45%] h-full border border-b-color rounded-2xl px-8 py-4 flex flex-col gap-1'>
+            <div className='w-[55%] h-full border border-b-color rounded-2xl px-8 py-4 flex flex-col gap-1'>
               
               <div className='flex gap-2 items-center text-sm'>
                 <p className='pr-1'>Printer Name:</p>
-                <p className='text-customBlue'>Aivwa</p>
+                <p className='text-customBlue'>{printerInfo?.printer_name ? printerInfo.printer_name : 'n/a'}</p>
                 <img src={Edit} alt="templates" className="w-4 h-4" />
               </div>
 
               <div className='flex gap-2 items-center text-sm'>
                 <p className='pr-1'>Printer Serial:</p>
-                <p className='text-customBlue'>123456789</p>
+                <p className='text-customBlue'>{printerInfo?.printer_serial ? printerInfo.printer_serial : 'n/a'}</p>
               </div>
 
               <div className='flex gap-2 items-center text-sm'>
@@ -191,7 +221,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Right */}
-            <div className='w-[55%] h-full border border-b-color rounded-2xl px-8 py-4 flex flex-col gap-1'>
+            <div className='w-[45%] h-full border border-b-color rounded-2xl px-8 py-4 flex flex-col gap-1'>
               <div className='flex gap-2 items-center text-sm  opacity-40'>
                 <p className='pr-1'>Printer Name:</p>
                 <p className='text-customBlue'>Aivwa</p>
@@ -215,5 +245,3 @@ const Dashboard: React.FC = () => {
     </Layout>
   );
 };
-
-export default Dashboard;

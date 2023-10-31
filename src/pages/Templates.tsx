@@ -7,7 +7,7 @@ import Plus from '../assets/icons/plus.svg';
 import SlabModal from '../components/SlabModal';
 import { Link } from 'react-router-dom';
 
-const Templates: React.FC = () => {
+export default function Templates() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalSlabId, setModalSlabId] = useState('');
@@ -189,5 +189,3 @@ const Templates: React.FC = () => {
     </Layout>
   );
 };
-
-export default Templates;

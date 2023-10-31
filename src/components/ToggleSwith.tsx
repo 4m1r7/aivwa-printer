@@ -1,10 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { SERVER_IP } from '../helpers/config';
 
-const ToggleSwitch = () => {
-  const [isOn, setIsOn] = useState(false);
+interface ToggleSwitchProps {
+  toggleStatus: boolean;
+  apiRoute: string;
+  property: string;
+}
+
+export default function ToggleSwitch({ toggleStatus, apiRoute, property } : ToggleSwitchProps) {
+
+  
+  const [isOn, setIsOn] = useState(toggleStatus);
+
+  useEffect(() => {
+    setIsOn(toggleStatus);
+  }, [toggleStatus]);
 
   const handleToggle = () => {
-    setIsOn(prevState => !prevState);
+    const newStatus = !isOn;
+    console.log(newStatus);
+
+    // Call the onToggle callback to update the status in the parent component
+    setIsOn(newStatus);
+
+    // Prepare the data for the POST request
+    const value = newStatus ? 'on' : 'off';
+    const requestData = {
+      setting: property,
+      value: value,
+    };
+
+    console.log(`${SERVER_IP}${apiRoute}`, JSON.stringify(requestData))
+
+    fetch(`${SERVER_IP}${apiRoute}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.text(); // Get the text response
+        } else {
+          throw new Error(`API request failed with status: ${response.status}`);
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error updating status:', error);
+        // Revert the toggle if the API call fails
+        setIsOn(!newStatus);
+      });
   };
 
   return (
@@ -17,5 +66,3 @@ const ToggleSwitch = () => {
     </div>
   );
 };
-
-export default ToggleSwitch;

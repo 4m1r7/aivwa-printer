@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 
 import Wifi from '../assets/icons/wifi.svg';
 import Cog from '../assets/icons/cog-icon.svg';
 import Active from '../assets/icons/active.png';
+import { SERVER_IP } from '../helpers/config';
+export default function Dashboard() {
 
-const Dashboard: React.FC = () => {
+  const [printerInfo, setPrinterInfo] = useState<any>(null);
+  console.log(printerInfo);
+
+  useEffect(() => {
+
+    // Find the ip of the current page
+    // const currentDomain = window.location.hostname;
+
+    // Make an HTTP request to fetch printer information
+    fetch(`http://${SERVER_IP}/printer/getPrinterInfo`)
+      .then((response) => response.json())
+      .then((data) => setPrinterInfo(data))
+      .catch((error) => console.error('Error fetching data:', error));
+  }, []);
 
 
   return (
@@ -86,7 +101,7 @@ const Dashboard: React.FC = () => {
                 <h2 className='ml-3 text-customGray font-medium'>Firmware Update</h2>
                 <div className='w-full h-full border border-b-color rounded-2xl px-8 py-4 flex justify-between items-center'>
                   <div className='flex flex-col items-center'>
-                      <p className='text-xl text-customBlue'>1.2.3.4.5</p>
+                      <p className='text-xl text-customBlue'>{printerInfo ? printerInfo.frimware_version : 0}</p>
                       <p className='text-sm text-customGray font-semibold'>Firmware Version</p>
                   </div>
                   <div className='text-xs text-customGreen'>
@@ -116,5 +131,3 @@ const Dashboard: React.FC = () => {
     </Layout>
   );
 };
-
-export default Dashboard;

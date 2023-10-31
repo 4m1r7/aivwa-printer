@@ -125,7 +125,7 @@ const canvasElements = [
 ];
 
 
-const CreateTemplate: React.FC = () => {
+export default function CreateTemplate() {
 
     const [canvasItems, setCanvasItems] = useState<Record<string, any>[]>([]);
     const [activeLayer, setActiveLayer] = useState<number>(0);
@@ -735,4 +735,3 @@ const CreateTemplate: React.FC = () => {
   );
 };
 
-export default CreateTemplate;
