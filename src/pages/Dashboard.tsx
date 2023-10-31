@@ -5,28 +5,33 @@ import Wifi from '../assets/icons/wifi.svg';
 import Cog from '../assets/icons/cog-icon.svg';
 import Active from '../assets/icons/active.png';
 import { SERVER_IP } from '../helpers/config';
+import axios from 'axios';
+import { useQuery } from 'react-query';
+
+
+
+
 export default function Dashboard() {
 
-  const [printerInfo, setPrinterInfo] = useState<any>(null);
-  console.log(printerInfo);
-
-  useEffect(() => {
-
-    // Find the ip of the current page
-    // const currentDomain = window.location.hostname;
-
-    // Make an HTTP request to fetch printer information
-    fetch(`http://${SERVER_IP}/printer/getPrinterInfo`)
-      .then((response) => response.json())
-      .then((data) => setPrinterInfo(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
-
+  const { data: activeWIFI } = useQuery('activeWIFI', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/printer/getactiveWiFi`);
+    return response.data;
+  });
+  
+  const { data: activeTemplateData } = useQuery('activeTemplate', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/templates/getActiveTemplate`);
+    return response.data;
+  });
+  
+  const { data: printerInfo } = useQuery('printerInfo', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/printer/getPrinterInfo`);
+    return response.data;
+  });
 
   return (
     <Layout>
       <div className="h-full w-full flex justify-center items-center">
-        <div className='w-[54rem] h-[41rem] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12'>
+        <div className='w-[54rem] h-[80%] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12 overflow-scroll'>
 
           {/* Now Printing section */}
           <div className='w-full h-min'>
@@ -36,19 +41,19 @@ export default function Dashboard() {
                 <img src={Cog} alt="templates" className="w-5 h-5" />
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>File Name:</p>
-                  <p className='text-sm'>Slab Label</p>
+                  <p className='text-sm'>{activeTemplateData?.document_name ? activeTemplateData?.document_name : 'n/a' }</p>
                 </div>
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>Size:</p>
-                  <p className='text-sm'>1.3cm - 10cm</p>
+                  <p className='text-sm'>n/a</p>
                 </div>
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>Print Count:</p>
-                  <p className='text-sm'>12345</p>
+                  <p className='text-sm'>{activeTemplateData?.print_count ? activeTemplateData?.print_count : 'n/a' }</p>
                 </div>
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>Last Updated:</p>
-                  <p className='text-sm'>12/3/4567</p>
+                  <p className='text-sm'>{activeTemplateData?.update_date ? activeTemplateData.update_date.replace(/:\d{2}$/, '') : 'n/a' }</p>
                 </div>
                 <img src={Active} alt="templates" className="w-7 h-7" />
               </div>
@@ -86,7 +91,7 @@ export default function Dashboard() {
                   <div className='flex items-center gap-4'>
                     <img src={Wifi} alt="templates" className="w-5 h-5" />
                     <div>
-                      <p>Aivwa WiFi</p>
+                      <p>{activeWIFI ? activeWIFI : 'n/a' }</p>
                       <p className='text-xs text-customBlue'>connected</p>
                     </div>
                   </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios'; 
 import { SERVER_IP } from '../helpers/config';
 
 interface ToggleSwitchProps {
@@ -16,43 +17,26 @@ export default function ToggleSwitch({ toggleStatus, apiRoute, property } : Togg
     setIsOn(toggleStatus);
   }, [toggleStatus]);
 
+
   const handleToggle = () => {
     const newStatus = !isOn;
-    console.log(newStatus);
 
     // Call the onToggle callback to update the status in the parent component
     setIsOn(newStatus);
 
-    // Prepare the data for the POST request
-    const value = newStatus ? 'on' : 'off';
-    const requestData = {
-      setting: property,
-      value: value,
-    };
-
-    console.log(`${SERVER_IP}${apiRoute}`, JSON.stringify(requestData))
-
-    fetch(`${SERVER_IP}${apiRoute}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.text(); // Get the text response
-        } else {
-          throw new Error(`API request failed with status: ${response.status}`);
-        }
+    axios
+      .post(`http://${SERVER_IP}${apiRoute}?setting=${property}&value=${newStatus ? 'on' : 'off'}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
-      .then((data) => {
-        console.log(data);
+      .then((response) => {
+        console.log(response.data);
       })
       .catch((error) => {
         console.error('Error updating status:', error);
         // Revert the toggle if the API call fails
-        setIsOn(!newStatus);
+        setTimeout(() => {setIsOn(!newStatus)}, 250);
       });
   };
 

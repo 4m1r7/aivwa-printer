@@ -6,6 +6,9 @@ import Import from '../assets/icons/import.svg';
 import Plus from '../assets/icons/plus.svg';
 import SlabModal from '../components/SlabModal';
 import { Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import axios from 'axios';
+import { SERVER_IP } from '../helpers/config';
 
 export default function Templates() {
 
@@ -21,6 +24,11 @@ export default function Templates() {
         setModalSlabId('');
         setIsModalOpen(false);
     };
+
+    const { data: templatesList } = useQuery('allTemplates', async () => {
+        const response = await axios.get(`http://${SERVER_IP}/templates/getAllTemplates`);
+        return response.data;
+    });
 
   return (
     <Layout>
@@ -77,106 +85,23 @@ export default function Templates() {
             
             {/* List Items */}
             <div className="w-full flex flex-col gap-4 overflow-y-scroll px-3 py-3">
-                <TemplateItem
-                    slabId={'4297'}
-                    slabName={'Granite'}
-                    printCount={'103'}
-                    lastModified={'2023/8/11'}
-                    exportUrl={''}
-                    isActive={true}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
-
-                <TemplateItem
-                    slabId={'5251'}
-                    slabName={'Onyx'}
-                    printCount={'13459'}
-                    lastModified={'2023/4/23'}
-                    exportUrl={''}
-                    isActive={false}
-                    onSlabSettingsClick={openModal}
-                />
+                {templatesList ? (
+                    templatesList.map( (template:any) => {
+                        return(
+                            <TemplateItem
+                                slabId={template.id ? template.id : 'n/a'}
+                                slabName={template.name ? template.name : 'n/a'}
+                                printCount={template.print_count}
+                                lastModified={template.last_updated ? template.last_updated : 'n/a'}
+                                exportUrl={''}
+                                isActive={template.is_active ? template.is_active : 'n/a'}
+                                onSlabSettingsClick={openModal}
+                            />
+                        )
+                    })
+                ) : (
+                    <p>Loading...</p>
+                )}
             </div>
 
             {/* Render the modal if open */}

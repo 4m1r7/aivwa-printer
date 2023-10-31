@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Layout from '../components/Layout';
 
 import ToggleSwitch from '../components/ToggleSwith';
@@ -7,27 +7,19 @@ import ColoredSquares from '../components/ProgressSquares';
 import Refresh from '../assets/icons/refresh.svg';
 import Edit from '../assets/icons/edit.svg';
 import { SERVER_IP } from '../helpers/config';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 
 
 export default function Settings() {
 
   const apiKeyRef = useRef<HTMLParagraphElement>(null);
   const [copied, setCopied] = useState(false);
-  const [printerInfo, setPrinterInfo] = useState<any>(null);
   
-  console.log(printerInfo);
-
-  useEffect(() => {
-
-    // Find the ip of the current page
-    // const currentDomain = window.location.hostname;
-
-    // Make an HTTP request to fetch printer information
-    fetch(`http://${SERVER_IP}/printer/getPrinterInfo`)
-      .then((response) => response.json())
-      .then((data) => setPrinterInfo(data))
-      .catch((error) => console.error('Error fetching data:'));
-  }, []);
+  const { data: printerInfo } = useQuery('printerSettings', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/printer/getPrinterSettings`);
+    return response.data;
+  });
 
 
 
@@ -52,7 +44,7 @@ export default function Settings() {
   return (
     <Layout>
       <div className="h-full w-full flex justify-center items-center">
-        <div className='w-[60rem] h-[41rem] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-4'>
+        <div className='w-[60rem] h-[80%] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-4  overflow-scroll'>
 
           {/* Top Container */}
           <div className="w-full flex gap-4">
@@ -190,7 +182,7 @@ export default function Settings() {
 
             <div className='flex flex-col justify-center items-center pt-3'>
               <pre className="text-customBlue text-center font-extralight leading-5">{printerInfo?.frimware_update_date ? printerInfo.frimware_update_date.replace(' ', '\n') : 'n/a' }</pre>
-              <p className="text-sm text-customGrayDark font-semibold pt-3">Firmware Date</p>
+              <p className="text-sm text-customGrayDark font-semibold">Firmware Date</p>
             </div>
             
           </div>
