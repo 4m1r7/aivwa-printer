@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 
 import Wifi from '../assets/icons/wifi.svg';
 import Cog from '../assets/icons/cog-icon.svg';
 import Active from '../assets/icons/active.png';
+import { SERVER_IP } from '../helpers/config';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 
-const Dashboard: React.FC = () => {
 
+
+
+export default function Dashboard() {
+
+  const { data: activeWIFI } = useQuery('activeWIFI', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/printer/getactiveWiFi`);
+    return response.data;
+  });
+  
+  const { data: activeTemplateData } = useQuery('activeTemplate', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/templates/getActiveTemplate`);
+    return response.data;
+  });
+  
+  const { data: printerInfo } = useQuery('printerInfo', async () => {
+    const response = await axios.get(`http://${SERVER_IP}/printer/getPrinterInfo`);
+    return response.data;
+  });
 
   return (
     <Layout>
       <div className="h-full w-full flex justify-center items-center">
-        <div className='w-[54rem] h-[41rem] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12'>
+        <div className='w-[54rem] h-[80%] max-w-full max-h-full p-8 rounded-2xl shadow-main flex flex-col gap-12 overflow-scroll'>
 
           {/* Now Printing section */}
           <div className='w-full h-min'>
@@ -21,19 +41,19 @@ const Dashboard: React.FC = () => {
                 <img src={Cog} alt="templates" className="w-5 h-5" />
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>File Name:</p>
-                  <p className='text-sm'>Slab Label</p>
+                  <p className='text-sm'>{activeTemplateData?.document_name ? activeTemplateData?.document_name : 'n/a' }</p>
                 </div>
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>Size:</p>
-                  <p className='text-sm'>1.3cm - 10cm</p>
+                  <p className='text-sm'>n/a</p>
                 </div>
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>Print Count:</p>
-                  <p className='text-sm'>12345</p>
+                  <p className='text-sm'>{activeTemplateData?.print_count ? activeTemplateData?.print_count : 'n/a' }</p>
                 </div>
                 <div className='flex flex-col text-center flex-1'>
                   <p className='text-sm font-light text-customGray'>Last Updated:</p>
-                  <p className='text-sm'>12/3/4567</p>
+                  <p className='text-sm'>{activeTemplateData?.update_date ? activeTemplateData.update_date.replace(/:\d{2}$/, '') : 'n/a' }</p>
                 </div>
                 <img src={Active} alt="templates" className="w-7 h-7" />
               </div>
@@ -71,7 +91,7 @@ const Dashboard: React.FC = () => {
                   <div className='flex items-center gap-4'>
                     <img src={Wifi} alt="templates" className="w-5 h-5" />
                     <div>
-                      <p>Aivwa WiFi</p>
+                      <p>{activeWIFI ? activeWIFI : 'n/a' }</p>
                       <p className='text-xs text-customBlue'>connected</p>
                     </div>
                   </div>
@@ -86,7 +106,7 @@ const Dashboard: React.FC = () => {
                 <h2 className='ml-3 text-customGray font-medium'>Firmware Update</h2>
                 <div className='w-full h-full border border-b-color rounded-2xl px-8 py-4 flex justify-between items-center'>
                   <div className='flex flex-col items-center'>
-                      <p className='text-xl text-customBlue'>1.2.3.4.5</p>
+                      <p className='text-xl text-customBlue'>{printerInfo ? printerInfo.frimware_version : 0}</p>
                       <p className='text-sm text-customGray font-semibold'>Firmware Version</p>
                   </div>
                   <div className='text-xs text-customGreen'>
@@ -116,5 +136,3 @@ const Dashboard: React.FC = () => {
     </Layout>
   );
 };
-
-export default Dashboard;

@@ -1,10 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios'; 
+import { SERVER_IP } from '../helpers/config';
 
-const ToggleSwitch = () => {
-  const [isOn, setIsOn] = useState(false);
+interface ToggleSwitchProps {
+  toggleStatus: boolean;
+  apiRoute: string;
+  property: string;
+}
+
+export default function ToggleSwitch({ toggleStatus, apiRoute, property } : ToggleSwitchProps) {
+
+  
+  const [isOn, setIsOn] = useState(toggleStatus);
+
+  useEffect(() => {
+    setIsOn(toggleStatus);
+  }, [toggleStatus]);
+
 
   const handleToggle = () => {
-    setIsOn(prevState => !prevState);
+    const newStatus = !isOn;
+
+    // Call the onToggle callback to update the status in the parent component
+    setIsOn(newStatus);
+
+    axios
+      .post(`http://${SERVER_IP}${apiRoute}?setting=${property}&value=${newStatus ? 'on' : 'off'}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Error updating status:', error);
+        // Revert the toggle if the API call fails
+        setTimeout(() => {setIsOn(!newStatus)}, 250);
+      });
   };
 
   return (
@@ -17,5 +50,3 @@ const ToggleSwitch = () => {
     </div>
   );
 };
-
-export default ToggleSwitch;
