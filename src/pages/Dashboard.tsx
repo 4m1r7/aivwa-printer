@@ -4,9 +4,9 @@ import Layout from '../components/Layout';
 import Wifi from '../assets/icons/wifi.svg';
 import Cog from '../assets/icons/cog-icon.svg';
 import Active from '../assets/icons/active.png';
-import { SERVER_IP } from '../helpers/config';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { Link } from 'react-router-dom';
 
 
 
@@ -14,17 +14,17 @@ import { useQuery } from 'react-query';
 export default function Dashboard() {
 
   const { data: activeWIFI } = useQuery('activeWIFI', async () => {
-    const response = await axios.get(`http://${SERVER_IP}/printer/getactiveWiFi`);
+    const response = await axios.get(`/printer/getactiveWiFi`);
     return response.data;
   });
   
   const { data: activeTemplateData } = useQuery('activeTemplate', async () => {
-    const response = await axios.get(`http://${SERVER_IP}/templates/getActiveTemplate`);
+    const response = await axios.get(`/templates/getActiveTemplate`);
     return response.data;
   });
   
   const { data: printerInfo } = useQuery('printerInfo', async () => {
-    const response = await axios.get(`http://${SERVER_IP}/printer/getPrinterInfo`);
+    const response = await axios.get(`/printer/getPrinterInfo`);
     return response.data;
   });
 
@@ -95,9 +95,12 @@ export default function Dashboard() {
                       <p className='text-xs text-customBlue'>connected</p>
                     </div>
                   </div>
-                  <div className='text-xs'>
+                  <Link to='/wifi-setting' className='text-xs'>
                     Settings
-                  </div>
+                  </Link>
+                  <Link to='/login' className='text-xs'>
+                    Login
+                  </Link>
                 </div>
               </div>
 

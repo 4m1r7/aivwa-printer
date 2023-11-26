@@ -2,43 +2,31 @@ import React, { useRef, useState } from 'react';
 import Layout from '../components/Layout';
 
 import ToggleSwitch from '../components/ToggleSwith';
-import NumberInput from '../components/NumberInput';
 import ColoredSquares from '../components/ProgressSquares';
-import Refresh from '../assets/icons/refresh.svg';
 import Edit from '../assets/icons/edit.svg';
-import { SERVER_IP } from '../helpers/config';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import LiveNumberInput from '../components/LiveNumberInput';
 
 
 export default function Settings() {
-
-  const apiKeyRef = useRef<HTMLParagraphElement>(null);
-  const [copied, setCopied] = useState(false);
   
   const { data: printerInfo } = useQuery('printerSettings', async () => {
-    const response = await axios.get(`http://${SERVER_IP}/printer/getPrinterSettings`);
+    const response = await axios.get(`/printer/getPrinterSettings`); //TODO omit ip
+    return response.data;
+  });
+
+  const { data: AuthRequired } = useQuery('authRequired', async () => {
+    const response = await axios.get(`/authenticationConfig/getAll`); //TODO omit ip
+    return response.data;
+  });
+
+  const { data: AuthInfo } = useQuery('authInfo', async () => {
+    const response = await axios.get(`/user/getById?id=2`); //TODO omit ip
     return response.data;
   });
 
 
-
-  const handleCopyToClipboard = async () => {
-    try {
-
-      await navigator.clipboard.writeText(apiKeyRef.current?.textContent ?? '');
-
-      setCopied(true);
-
-      // Revert copied text to copy after 2 seconds
-      setTimeout(() => {
-        setCopied(false);
-      }, 1500);
-
-    } catch (error) {
-      console.error('Failed to copy to clipboard:', error);
-    }
-  };
 
 
   return (
@@ -81,7 +69,11 @@ export default function Settings() {
                   <div className="w-5/12 flex items-center font-light">Print Speed</div>
                   <div className="w-7/12 flex items-center gap-2">
                     <div className='w-24'>
-                      <NumberInput currentValue={(printerInfo?.printspeed ? printerInfo.printspeed : 0 )} />
+                      <LiveNumberInput
+                        currentValue={(printerInfo?.printspeed ? printerInfo.printspeed : 0 )}
+                        apiRoute="/printer/setPrinterSettings"
+                        property="printer_auto_on"
+                      />
                     </div>
                     <p className='text-micro text-customGray'>meter/minute</p>
                   </div>
@@ -91,7 +83,11 @@ export default function Settings() {
                   <div className="w-5/12 flex items-center font-light">Encoder Steps</div>
                   <div className="w-7/12 flex items-center gap-2">
                     <div className='w-24'>
-                      <NumberInput currentValue={(printerInfo?.encoder_steps ? printerInfo.encoder_steps : 0 )} />
+                      <LiveNumberInput
+                        currentValue={(printerInfo?.encoder_steps ? printerInfo.encoder_steps : 0 )}
+                        apiRoute="/printer/setPrinterSettings"
+                        property="encoder_steps"
+                      />
                     </div>
                     <p className='text-micro text-customGray'>step/milimeter</p>
                   </div>
@@ -123,42 +119,38 @@ export default function Settings() {
             <div className='w-[55%] h-full'>
 
               <h2 className='h-[8%] ml-3 text-customGray font-medium'>Security</h2>
-              <div className='h-[92%] w-full border border-b-color rounded-2xl p-4 flex flex-col justify-between gap-3'>
+              <div className='h-[92%] w-full border border-b-color rounded-2xl p-4 flex flex-col justify-start gap-3'>
 
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Login Required</div>
                   <div className="w-7/12">
-                    {/* <ToggleSwitch /> */}
+                    <ToggleSwitch
+                      toggleStatus = {(AuthRequired ? AuthRequired?.find((obj: { key: string; }) => obj.key === "authentication_enable").value : 'false' ) === 'true'}
+                      apiRoute=""
+                      property=""
+                    />
                   </div>
                 </div>
                 
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Login Username</div>
                   <div className="w-7/12">
-                    <input type="text" className='w-full px-2 py-[.4rem] text-sm border border-customGray rounded-lg' />
+                    <input
+                      type="text"
+                      className='w-full px-2 py-[.4rem] text-sm border border-customGray rounded-lg'
+                      placeholder={AuthInfo?.Username}
+                    />
                   </div>
                 </div>
                 
                 <div className="w-full h-min flex">
                   <div className="w-5/12 flex items-center font-light">Login Password</div>
                   <div className="w-7/12 flex items-center gap-2">
-                    <input type="text" className='w-full px-2 py-[.4rem] text-sm border border-customGray rounded-lg' />
-                  </div>
-                </div>
-                
-                <div className="w-full h-min flex">
-                  <div className="w-5/12 flex items-center font-light">API Security Required</div>
-                  <div className="w-7/12 flex items-center gap-2">
-                    {/* <ToggleSwitch /> */}
-                  </div>
-                </div>
-                
-                <div className="w-full h-min flex">
-                  <div className="w-5/12 flex items-center font-light">API Security key</div>
-                  <div className="w-7/12 relative flex items-center">
-                    <p ref={apiKeyRef} className='w-full px-2 py-[.4rem] text-sm text-customGrayDark border border-customGray rounded-lg'>Lgbd-OSDB-3vdW-Emps</p>
-                    {copied ? <span className="text-green-500 text-pico absolute right-9">Copied!</span> : <span onClick={handleCopyToClipboard} className="text-customGrayDark text-pico absolute right-10 cursor-pointer">Copy</span>}
-                    <img src={Refresh} alt="refresh" className="w-4 h-4 absolute right-3 cursor-pointer" />
+                    <input
+                      type="text"
+                      className='w-full px-2 py-[.4rem] text-sm border border-customGray rounded-lg'
+                      placeholder={AuthInfo?.Password}
+                    />
                   </div>
                 </div>
                 

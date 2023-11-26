@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; 
-import { SERVER_IP } from '../helpers/config';
 
 interface ToggleSwitchProps {
   toggleStatus: boolean;
@@ -25,7 +24,7 @@ export default function ToggleSwitch({ toggleStatus, apiRoute, property } : Togg
     setIsOn(newStatus);
 
     axios
-      .post(`http://${SERVER_IP}${apiRoute}?setting=${property}&value=${newStatus ? 'on' : 'off'}`, {
+      .post(`/${apiRoute}?setting=${property}&value=${newStatus ? 'on' : 'off'}`, {
         headers: {
           'Content-Type': 'application/json',
         },

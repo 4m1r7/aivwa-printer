@@ -8,7 +8,6 @@ import SlabModal from '../components/SlabModal';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { SERVER_IP } from '../helpers/config';
 
 export default function Templates() {
 
@@ -26,7 +25,7 @@ export default function Templates() {
     };
 
     const { data: templatesList } = useQuery('allTemplates', async () => {
-        const response = await axios.get(`http://${SERVER_IP}/templates/getAllTemplates`);
+        const response = await axios.get(`/templates/getAllTemplates`);
         return response.data;
     });
 
