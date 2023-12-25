@@ -22,6 +22,10 @@ import EyeHide from '../assets/icons/eye-hide.svg';
 import More from '../assets/icons/more.svg';
 import TextInput from '../components/TextInput';
 import DropdownSelect from '../components/DropdownSelect';
+import { convertObjectsToJson } from '../helpers/stateToJson';
+import SettingNumberInput from '../components/SettingNumberInput';
+import ToggleSwitch from '../components/ToggleSwith';
+import axios from 'axios';
 
 // Define the CanvasElement types
 const canvasElements = [
@@ -111,8 +115,8 @@ const canvasElements = [
     resizable: true,
     options: ['Circle', 'Rectangle', 'Line'],
     content: [
-                <ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" stroke-width="1" fill="transparent" />,
-                <rect x="0" y="0" width="100%" height="100%" stroke="black" stroke-width="3" fill="transparent" />,
+                <ellipse cx="50%" cy="50%" rx="50%" ry="50%" stroke="black" strokeWidth="1" fill="transparent" />,
+                <rect x="0" y="0" width="100%" height="100%" stroke="black" strokeWidth="3" fill="transparent" />,
                 <line x1="0" y1="50%" x2="100%" y2="50%" stroke="black" strokeWidth="2" />,
             ],
     width: [200, 250, 300],
@@ -127,9 +131,27 @@ const canvasElements = [
 
 export default function CreateTemplate() {
 
+    const [authToken, setAuthToken] = useState('');
     const [canvasItems, setCanvasItems] = useState<Record<string, any>[]>([]);
     const [activeLayer, setActiveLayer] = useState<number>(0);
     const [isShapeSelectorOpen, setIsShapeSelectorOpen] = useState<boolean>(false);
+
+    // Templates Settings
+    const [documentName, setDocumentName] = useState<string>('');
+    const [repeatDocument, setRepeatDocument] = useState<boolean>(false);
+    const [delayBeforePrint, setDelayBeforePrint] = useState<number>(0);
+    const [quantity, setQuantity] = useState<number>(0);
+    const [quantityDelay, setQuantityDelay] = useState<number>(0);
+
+    // Grab auth token if it exists
+    useEffect(() => {
+        const token = localStorage.getItem('aivwa-printer-auth-token');
+        
+        if (token) {
+        setAuthToken(token);
+        }
+    }, []);
+
     // remove refs if not used - TODO
     const itemRefs = canvasItems.map(() => React.createRef<Rnd>());
 
@@ -262,6 +284,50 @@ export default function CreateTemplate() {
         setCanvasItems(updatedCanvasItems);
     }
 
+    // Save the template in the database
+    const handleSave = () => {
+
+        const elements = convertObjectsToJson(canvasItems);
+        const output = {
+            "document_name": documentName,
+            "repeat_document": repeatDocument,
+            "print_count": 1,
+            "create_date": "2019-01-01 00:00:00",
+            "last_print_date": "2019-01-01 00:00:00",
+            "update_date": "2019-01-01 00:00:00",
+            "delay_before_print": delayBeforePrint,
+            "quantity": quantity,
+            "quantity_delay": quantityDelay,
+            "elements": elements
+        };
+
+        // Convert the output object to JSON
+        const outputJSON = JSON.stringify(output, null, 4);
+
+        axios.post(`/templates/saveTemplate?id=1&data={${outputJSON}}`, {
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`,
+            },
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                console.log('Success!');
+                // setInfoButtonText('Success!');
+                // setTimeout(() => setInfoButtonText('Update'), 2000);
+            } else {
+            throw new Error('Non-200 status code');
+            }
+        })
+        .catch((error) => {
+            console.error('Error updating status:', error);
+            console.log('Failed!');
+            // setInfoButtonText('Failed');
+            // setTimeout(() => setInfoButtonText('Update'), 2000);
+        });
+    }
+    
+
 
   return (
     <div className="h-screen w-full flex flex-col justify-start items-center gap-8 pt-24">
@@ -320,7 +386,11 @@ export default function CreateTemplate() {
                             Delay Before Print
                         </p>
                         <div className="w-36">
-                            <NumberInput unit='ms' />
+                            <SettingNumberInput
+                                unit='ms'
+                                value={delayBeforePrint}
+                                onValueChange={setDelayBeforePrint}
+                            />
                         </div>
                     </div>
 
@@ -329,7 +399,11 @@ export default function CreateTemplate() {
                             Quantity Delay
                         </p>
                         <div className="w-36">
-                            <NumberInput unit='ms' />
+                            <SettingNumberInput
+                                unit='ms'
+                                value={quantityDelay}
+                                onValueChange={setQuantityDelay}
+                            />
                         </div>
                     </div>
 
@@ -338,7 +412,10 @@ export default function CreateTemplate() {
                             Repeat Document
                         </p>
                         <div className="w-36">
-                            <NumberInput />
+                            <ToggleSwitch
+                                toggleStatus = {repeatDocument}
+                                setToggleStatus = {setRepeatDocument}
+                            />
                         </div>
                     </div>
 
@@ -347,7 +424,10 @@ export default function CreateTemplate() {
                             Quantity
                         </p>
                         <div className="w-36">
-                            <NumberInput />
+                            <SettingNumberInput
+                                value={quantity}
+                                onValueChange={setQuantity}
+                            />
                         </div>
                     </div>
 
@@ -356,7 +436,12 @@ export default function CreateTemplate() {
                             Name
                         </p>
                         <div className="w-36">
-                            <input type="text" className='w-full px-2 py-[.4rem] text-sm text-center border border-customGray rounded-lg' />
+                            <input
+                                type="text"
+                                className='w-full px-2 py-[.4rem] text-sm text-center border border-customGray rounded-lg'
+                                value={documentName}
+                                onChange={(e) => setDocumentName(e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -378,7 +463,10 @@ export default function CreateTemplate() {
                     <img src={Preview} alt="templates" className="w-7 h-7" />
                     Preview
                 </button>
-                <button className='h-[72px] w-24 shadow-pane rounded-xl flex flex-col justify-center items-center gap-2 bg-customBlue text-white'>
+                <button 
+                    className='h-[72px] w-24 shadow-pane rounded-xl flex flex-col justify-center items-center gap-2 bg-customBlue text-white'
+                    onClick={handleSave}
+                >
                     <img src={Save} alt="templates" className="w-7 h-7" />
                     Save
                 </button>

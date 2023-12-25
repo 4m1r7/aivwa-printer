@@ -98,9 +98,6 @@ export default function Dashboard() {
                   <Link to='/wifi-setting' className='text-xs'>
                     Settings
                   </Link>
-                  <Link to='/login' className='text-xs'>
-                    Login
-                  </Link>
                 </div>
               </div>
 
