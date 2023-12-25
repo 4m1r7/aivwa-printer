@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import TemplateItem from '../components/TemplateItem';
 
@@ -8,10 +8,10 @@ import SlabModal from '../components/SlabModal';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { SERVER_IP } from '../helpers/config';
 
 export default function Templates() {
 
+    const [templates, setTemplates] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalSlabId, setModalSlabId] = useState('');
 
@@ -25,10 +25,15 @@ export default function Templates() {
         setIsModalOpen(false);
     };
 
-    const { data: templatesList } = useQuery('allTemplates', async () => {
-        const response = await axios.get(`http://${SERVER_IP}/templates/getAllTemplates`);
+    const { data: templatesList, isError } = useQuery('allTemplates', async () => {
+        const response = await axios.get(`/templates/getAllTemplates`);
         return response.data;
     });
+
+    useEffect(() => {
+        setTemplates(templatesList || []);
+    }, [templatesList]);
+
 
   return (
     <Layout>
@@ -85,8 +90,10 @@ export default function Templates() {
             
             {/* List Items */}
             <div className="w-full flex flex-col gap-4 overflow-y-scroll px-3 py-3">
-                {templatesList ? (
-                    templatesList.map( (template:any) => {
+                {isError ? (
+                    <p className='text-sm text-center p-20'>Loading Failed!<br/>Server does not respond...</p>
+                ) : templates.length > 0 ? (
+                    templates.map( (template:any) => {
                         return(
                             <TemplateItem
                                 slabId={template.id ? template.id : 'n/a'}
@@ -100,7 +107,7 @@ export default function Templates() {
                         )
                     })
                 ) : (
-                    <p>Loading...</p>
+                    <p className='text-sm text-center p-20'>Loading Templates...</p> // Loading state
                 )}
             </div>
 
